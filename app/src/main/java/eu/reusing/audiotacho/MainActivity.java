@@ -13,8 +13,13 @@ import android.widget.TextView;
 
 import eu.reusing.audiotacho.dataprocessor.DataProcessor;
 import eu.reusing.audiotacho.dataprocessor.SpeedDataConsumer;
+import eu.reusing.audiotacho.utils.FifoBuffer;
 
 public class MainActivity extends AppCompatActivity implements SpeedDataConsumer {
+
+    private FifoBuffer speed3Buffer = new FifoBuffer(3);
+    private FifoBuffer speed5Buffer = new FifoBuffer(5);
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,12 +71,20 @@ public class MainActivity extends AppCompatActivity implements SpeedDataConsumer
 
     @Override
     public void updateSpeedData(final double speed) {
-        final TextView textView = (TextView) findViewById(R.id.textView);
-
-        textView.post(new Runnable() {
+        speed3Buffer.addDataPoint(speed);
+        speed5Buffer.addDataPoint(speed);
+        final TextView speedText = (TextView) findViewById(R.id.speed);
+        final TextView speed3Text = (TextView) findViewById(R.id.speed3);
+        final TextView speed5Text = (TextView) findViewById(R.id.speed5);
+        final String speedStr = String.format("%1$,.2f", speed);
+        final String speed3Str = String.format("%1$,.2f", speed3Buffer.getAverage());
+        final String speed5Str = String.format("%1$,.2f", speed5Buffer.getAverage());
+        speedText.post(new Runnable() {
             @Override
             public void run() {
-                textView.setText(String.format("%1$,.2f", speed));
+                speedText.setText(speedStr);
+                speed3Text.setText(speed3Str);
+                speed5Text.setText(speed5Str);
             }
         });
         System.out.println(speed);
