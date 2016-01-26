@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements SpeedDataConsumer
             }
         });
 
-        final Button button = (Button) findViewById(R.id.button);
+        final Button button = (Button) findViewById(R.id.measure_button);
         final SpeedDataConsumer consumer = this;
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
