@@ -11,14 +11,16 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.util.Locale;
+
 import eu.reusing.audiotacho.dataprocessor.DataProcessor;
 import eu.reusing.audiotacho.dataprocessor.SpeedDataConsumer;
 import eu.reusing.audiotacho.utils.FifoBuffer;
 
 public class MainActivity extends AppCompatActivity implements SpeedDataConsumer {
 
+    private FifoBuffer speed2Buffer = new FifoBuffer(2);
     private FifoBuffer speed3Buffer = new FifoBuffer(3);
-    private FifoBuffer speed5Buffer = new FifoBuffer(5);
 
 
     @Override
@@ -71,20 +73,20 @@ public class MainActivity extends AppCompatActivity implements SpeedDataConsumer
 
     @Override
     public void updateSpeedData(final double speed) {
+        speed2Buffer.addDataPoint(speed);
         speed3Buffer.addDataPoint(speed);
-        speed5Buffer.addDataPoint(speed);
         final TextView speedText = (TextView) findViewById(R.id.speed);
+        final TextView speed2Text = (TextView) findViewById(R.id.speed2);
         final TextView speed3Text = (TextView) findViewById(R.id.speed3);
-        final TextView speed5Text = (TextView) findViewById(R.id.speed5);
-        final String speedStr = String.format("%1$,.2f", speed);
-        final String speed3Str = String.format("%1$,.2f", speed3Buffer.getAverage());
-        final String speed5Str = String.format("%1$,.2f", speed5Buffer.getAverage());
+        final String speedStr = String.format(Locale.getDefault(), "%1$,.2f", speed);
+        final String speed3Str = String.format(Locale.getDefault(), "%1$,.2f", speed2Buffer.getAverage());
+        final String speed5Str = String.format(Locale.getDefault(), "%1$,.2f", speed3Buffer.getAverage());
         speedText.post(new Runnable() {
             @Override
             public void run() {
                 speedText.setText(speedStr);
-                speed3Text.setText(speed3Str);
-                speed5Text.setText(speed5Str);
+                speed2Text.setText(speed3Str);
+                speed3Text.setText(speed5Str);
             }
         });
         System.out.println(speed);
