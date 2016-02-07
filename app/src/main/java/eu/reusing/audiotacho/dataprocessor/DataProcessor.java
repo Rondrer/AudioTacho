@@ -25,6 +25,8 @@ public class DataProcessor implements Runnable{
 
     private double circumference = 0.314159;
 
+    private boolean properlyInitialized = false;
+
     private SpeedDataConsumer consumer;
 
     public DataProcessor(SpeedDataConsumer consumer) {
@@ -37,6 +39,7 @@ public class DataProcessor implements Runnable{
          * Cut that in halve for the possibility of two pickups per revolution and substrakt a safety margin
          */
     // CHANGED, does not reflect calculation
+    @SuppressWarnings("PointlessArithmeticExpression")
     private final int MIN_SAMPLES_BETWEEN_CAPTURE = 5000 * (SAMPLE_RATE_IN_HZ / 44100);
 
     private int threshold = 5000;
@@ -52,11 +55,21 @@ public class DataProcessor implements Runnable{
         }
         Log.i(TAG, "BufferSize: " + bufferSizeInBytes);
         audioRecord = new AudioRecord(AUDIO_SOURCE, SAMPLE_RATE_IN_HZ, CHANNEL_CONFIG, AUDIO_FORMAT, bufferSizeInBytes);
-        processingLoop();
+        if (audioRecord.getState() != AudioRecord.STATE_INITIALIZED)
+        {
+            Log.e(TAG, "Error initializing AudioRecord object. Abort audio input processing.");
+            properlyInitialized = false;
+        }
+        else {
+            properlyInitialized = true;
+            processingLoop();
+        }
     }
 
     private void processingLoop()
     {
+        if (!properlyInitialized) return;
+
         audioRecord.startRecording();
         short[] chunk = new short[chunkSize];
 
