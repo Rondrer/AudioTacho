@@ -4,6 +4,7 @@
     <string name="speed_unit_kmh">km/h</string>
     <string name="zero_value_double">0.00</string>
     <string name="start_measuring">Start Tacho!</string>
+    <string name="stop_measuring">Stop Tacho!</string>
     <string name="speed_realtime"> (Realtime)</string>
     <string name="speed_average2"> (2-Average)</string>
     <string name="speed_average3"> (3-Average)</string>

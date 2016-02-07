@@ -22,6 +22,8 @@ public class MainActivity extends AppCompatActivity implements SpeedDataConsumer
     private FifoBuffer speed2Buffer = new FifoBuffer(2);
     private FifoBuffer speed3Buffer = new FifoBuffer(3);
 
+    private DataProcessor dataProcessor;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,14 +41,8 @@ public class MainActivity extends AppCompatActivity implements SpeedDataConsumer
             }
         });
 
-        final Button button = (Button) findViewById(R.id.measure_button);
-        final SpeedDataConsumer consumer = this;
-        button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                DataProcessor processor = new DataProcessor(consumer);
-                (new Thread(processor)).start();
-            }
-        });
+        measuringStopped();
+
     }
 
     @Override
@@ -91,4 +87,40 @@ public class MainActivity extends AppCompatActivity implements SpeedDataConsumer
         });
         System.out.println(speed);
     }
+
+    @Override
+    public void measuringStarted() {
+        final Button button = (Button) findViewById(R.id.measure_button);
+        final SpeedDataConsumer consumer = this;
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                dataProcessor.stopTacho();
+            }
+        });
+        button.post(new Runnable() {
+            @Override
+            public void run() {
+                button.setText(R.string.stop_measuring);
+            }
+        });
+    }
+
+    @Override
+    public void measuringStopped() {
+        final Button button = (Button) findViewById(R.id.measure_button);
+        final SpeedDataConsumer consumer = this;
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                dataProcessor = new DataProcessor(consumer);
+                (new Thread(dataProcessor)).start();
+            }
+        });
+        button.post(new Runnable() {
+            @Override
+            public void run() {
+                button.setText(R.string.start_measuring);
+            }
+        });
+    }
+
 }
