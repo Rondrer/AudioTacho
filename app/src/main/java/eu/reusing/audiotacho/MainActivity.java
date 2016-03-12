@@ -89,6 +89,18 @@ public class MainActivity extends AppCompatActivity implements SpeedDataConsumer
     }
 
     @Override
+    public void updateDistance(double distance) {
+        final String distanceStr = String.format(Locale.getDefault(), "%1$,.3f", distance);
+        final TextView distanceText = (TextView) findViewById(R.id.distance);
+        distanceText.post(new Runnable() {
+            @Override
+            public void run() {
+                distanceText.setText(distanceStr);
+            }
+        });
+    }
+
+    @Override
     public void measuringStarted() {
         final Button button = (Button) findViewById(R.id.measure_button);
         final SpeedDataConsumer consumer = this;

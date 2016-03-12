@@ -24,6 +24,7 @@ public class DataProcessor implements Runnable {
     private boolean properlyInitialized = false;
 
     private SpeedDataConsumer consumer;
+    private double distance;
 
     public DataProcessor(SpeedDataConsumer consumer) {
         this.consumer = consumer;
@@ -55,6 +56,9 @@ public class DataProcessor implements Runnable {
             properlyInitialized = false;
         } else {
             properlyInitialized = true;
+            distance = 0;
+            consumer.updateDistance(0);
+            consumer.updateSpeedData(0);
             processingLoop();
         }
     }
@@ -109,5 +113,7 @@ public class DataProcessor implements Runnable {
         double speedMS = circumference / revTime;
         double speedKMH = speedMS * 3.6;
         consumer.updateSpeedData(speedKMH);
+        distance += circumference / 1000;
+        consumer.updateDistance(distance);
     }
 }

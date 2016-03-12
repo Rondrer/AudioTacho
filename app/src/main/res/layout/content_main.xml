@@ -19,7 +19,7 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:gravity="end"
-            android:text="@string/zero_value_double"
+            android:text="@string/zero_value_double_3digits"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <TextView
@@ -49,7 +49,7 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:gravity="end"
-            android:text="@string/zero_value_double"
+            android:text="@string/zero_value_double_3digits"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <TextView
@@ -79,7 +79,7 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:gravity="end"
-            android:text="@string/zero_value_double"
+            android:text="@string/zero_value_double_3digits"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <TextView
@@ -96,6 +96,36 @@
             android:layout_marginLeft="20dp"
             android:layout_marginStart="20dp"
             android:text="@string/speed_average3"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp">
+
+        <TextView
+            android:id="@+id/distance"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:text="@string/zero_value_double_4digits"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
+            android:text="@string/distance_unit_km"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
+            android:text="@string/distance"
             android:textAppearance="?android:attr/textAppearanceLarge" />
     </LinearLayout>
 
