@@ -11,4 +11,9 @@
     <string name="speed_average2"> (2-Average)</string>
     <string name="speed_average3"> (3-Average)</string>
     <string name="distance"> (Distance)</string>
+    <string name="circumference_setting">Tire circumference</string>
+    <string name="circumference_setting_summ">Tire circumference in mm</string>
+    <string name="default_circumference">1000</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
 </resources>

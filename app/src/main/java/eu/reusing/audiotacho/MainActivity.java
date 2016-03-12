@@ -1,6 +1,11 @@
 package eu.reusing.audiotacho;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.Preference;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -17,7 +22,7 @@ import eu.reusing.audiotacho.dataprocessor.DataProcessor;
 import eu.reusing.audiotacho.dataprocessor.SpeedDataConsumer;
 import eu.reusing.audiotacho.utils.FifoBuffer;
 
-public class MainActivity extends AppCompatActivity implements SpeedDataConsumer {
+public class MainActivity extends AppCompatActivity implements SpeedDataConsumer, SharedPreferences.OnSharedPreferenceChangeListener {
 
     private FifoBuffer speed2Buffer = new FifoBuffer(2);
     private FifoBuffer speed3Buffer = new FifoBuffer(3);
@@ -28,21 +33,15 @@ public class MainActivity extends AppCompatActivity implements SpeedDataConsumer
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+
 
         measuringStopped();
-
     }
 
     @Override
@@ -61,6 +60,9 @@ public class MainActivity extends AppCompatActivity implements SpeedDataConsumer
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent intent = new Intent();
+            intent.setClassName(this, "eu.reusing.audiotacho.SettingsActivity");
+            startActivity(intent);
             return true;
         }
 
@@ -69,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements SpeedDataConsumer
 
     @Override
     public void updateSpeedData(final double speed) {
+
         speed2Buffer.addDataPoint(speed);
         speed3Buffer.addDataPoint(speed);
         final TextView speedText = (TextView) findViewById(R.id.speed);
@@ -121,9 +124,12 @@ public class MainActivity extends AppCompatActivity implements SpeedDataConsumer
     public void measuringStopped() {
         final Button button = (Button) findViewById(R.id.measure_button);
         final SpeedDataConsumer consumer = this;
+        final Context context = this;
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 dataProcessor = new DataProcessor(consumer);
+                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+                String circStr = sharedPref.getString(SettingsFragment.KEY_CIRCUM, "");
                 (new Thread(dataProcessor)).start();
             }
         });
@@ -135,4 +141,10 @@ public class MainActivity extends AppCompatActivity implements SpeedDataConsumer
         });
     }
 
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals(SettingsFragment.KEY_CIRCUM)) {
+            dataProcessor.setCircumference(sharedPreferences.getString(key, ""));
+        }
+    }
 }

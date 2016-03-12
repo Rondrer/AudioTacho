@@ -17,7 +17,6 @@ public class DataProcessor implements Runnable {
     public final int CHANNEL_CONFIG = AudioFormat.CHANNEL_IN_MONO;
     public final int AUDIO_FORMAT = AudioFormat.ENCODING_PCM_16BIT;
     private int bufferSizeInBytes = (SAMPLE_RATE_IN_HZ / 4) + 1; // needs to be even (2byte per capture)
-    private int chunkSize = SAMPLE_RATE_IN_HZ / 16;
 
     private double circumference = 0.314159;
 
@@ -36,9 +35,10 @@ public class DataProcessor implements Runnable {
          * Cut that in halve for the possibility of two pickups per revolution and substrakt a safety margin
          */
     // CHANGED, does not reflect calculation
-    @SuppressWarnings("PointlessArithmeticExpression")
+    @SuppressWarnings({"PointlessArithmeticExpression", "FieldCanBeLocal"})
     private final int MIN_SAMPLES_BETWEEN_CAPTURE = 5000 * (SAMPLE_RATE_IN_HZ / 44100);
 
+    @SuppressWarnings("FieldCanBeLocal")
     private int threshold = 5000;
 
     private boolean stopRequested = false;
@@ -68,6 +68,7 @@ public class DataProcessor implements Runnable {
 
         consumer.measuringStarted();
         audioRecord.startRecording();
+        int chunkSize = SAMPLE_RATE_IN_HZ / 16;
         short[] chunk = new short[chunkSize];
 
         int interval = 0;
@@ -115,5 +116,20 @@ public class DataProcessor implements Runnable {
         consumer.updateSpeedData(speedKMH);
         distance += circumference / 1000;
         consumer.updateDistance(distance);
+    }
+
+    public double getCircumference() {
+        return circumference;
+    }
+
+    public void setCircumference(double circumference) {
+        this.circumference = circumference;
+    }
+
+    public void setCircumference(String mm_str)
+    {
+        System.out.println(mm_str);
+//        double circ_in_mm = Double.parseDouble(mm_str);
+//        this.circumference = circ_in_mm / 1000;
     }
 }
